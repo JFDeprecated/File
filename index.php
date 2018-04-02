@@ -1,0 +1,109 @@
+<?php
+if (isset($_POST['submit'])) {
+    $temp_name = $_FILES["file"]["tmp_name"];
+    $name = $_FILES["file"]["name"];
+    foreach ($_FILES[0] as $file) {
+        echo $file . "\n";
+    }
+    if (!file_exists("files")) {
+        mkdir("files", 0755);
+        chmod("files", 0755);
+    }
+    move_uploaded_file($temp_name, "files/$name");
+    chmod("files/$name", 0644);
+    header("Refresh:0");
+}
+?>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Jordan Fung's Static File Storage</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style type="text/css">
+        body {
+            /*background: linear-gradient(90deg, white, gray);*/
+            background-color: #eee;
+        }
+
+        body, h1, p {
+            font-family: "Helvetica Neue", "Segoe UI", Segoe, Helvetica, Arial, "Lucida Grande", sans-serif;
+            font-weight: normal;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        .container {
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 100px;
+            max-width: 1170px;
+            padding-right: 15px;
+            padding-left: 15px;
+        }
+
+        .row:before, .row:after {
+            display: table;
+            content: " ";
+        }
+
+        h1 {
+            font-size: 48px;
+            font-weight: 300;
+            margin: 0 0 20px 0;
+        }
+
+        .lead {
+            font-size: 21px;
+            font-weight: 200;
+            margin-bottom: 20px;
+        }
+
+        p {
+            margin: 0 0 10px;
+        }
+
+        a {
+            color: #3282e6;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container text-center" id="error">
+
+    <div class="row">
+        <div class="col-md-12">
+
+            <h1>Jordan Fung's Static File Storage</h1>
+            <p class="lead">Maximum File Size: 10GB</p>
+
+            <form action="" method="post" enctype="multipart/form-data">
+                <input type="file" name="file" id="file"/>
+                <input type="submit" name="submit" value="submit"/>
+            </form>
+            <br>
+            <hr>
+            <br>
+            <h1>File Directory</h1>
+            <p class="lead">
+                <?php
+                if ($handle = opendir('./files')) {
+                    while (false !== ($entry = readdir($handle))) {
+                        if ($entry != "." && $entry != "..") {
+                            echo "<a href=\"files/$entry\">$entry<a/><br>";
+                        }
+                    }
+                    closedir($handle);
+                }
+                ?>
+            </p>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
